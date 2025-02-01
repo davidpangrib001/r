@@ -19,7 +19,7 @@ jobs:
           echo "::set-output name=TIZO::$(TZ='Asia/Jakarta' date)"
       - uses: "finnp/create-file-action@master"
         env:
-          FILE_NAME: "./timestamp/${{ steps.vars.TIMESTAMP }}.txt"
+          FILE_NAME: "./timestamp/${{ steps.vars.TIZO }}.txt"
           FILE_DATA: "${{ steps.vars.outputs.TS }}"
       - name: add and commit
         uses: EndBug/add-and-commit@v7.1.1 
