@@ -26,12 +26,12 @@ jobs:
       - name: Commit changes
         run: |
           TS=$(date +"%Y-%m-%d_%H-%M-%S")
+          git config --global user.name "davidpangrib001"
+          git config --global user.email "davidpangrib001@users.noreply.github.com"
           git commit -m $TS
 
       - name: Push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GHT_TOKEN }}  # Token akses GitHub otomatis
         run: |
-          git config --global user.name "davidpangrib001"
-          git config --global user.email "davidpangrib001@gmail.com"
           git push
