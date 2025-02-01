@@ -14,15 +14,15 @@ jobs:
       - name: Create timestamp 
         id: vars
         run: |
-          echo "::set-output name=TIMESTAMP::$(date +'%Y-%m-%d_%H-%M')"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
           echo "::set-output name=TS::(date +'%Y-%m-%d_%H-%M-%S')"
           echo "::set-output name=TIZO::$(TZ='Asia/Jakarta' date)"
       - uses: "finnp/create-file-action@master"
         env:
-          FILE_NAME: "./timestamp/${{ steps.vars.TIZO }}.txt"
+          FILE_NAME: "./timestamp/${{ steps.vars.sha_short }}.txt"
           FILE_DATA: "${{ steps.vars.outputs.TS }}"
       - name: add and commit
         uses: EndBug/add-and-commit@v7.1.1 
         with:
-          add: "./timestamp/${{ steps.vars.outputs.TIMESTAMP }}.txt"
+          add: "./timestamp/${{ steps.vars.outputs.sha_short }}.txt"
           message: "Update: ${{ steps.vars.outputs.TIZO }}"
