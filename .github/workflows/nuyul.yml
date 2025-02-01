@@ -1,4 +1,4 @@
-name: Auto Add Files
+name: auto add new file
 
 on:
   schedule:
