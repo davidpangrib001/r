@@ -1,28 +1,39 @@
-name: Automatic Add File(s)
-on:  
+name: Auto Add Files
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'  # Menjalankan commit otomatis setiap 2 menit
   push:
     branches:
-      - main
-  schedule:
-    - cron: '*/2 * * * *' # every two minutes
-  workflow_dispatch:
+      - main  # Ubah dengan nama cabang yang sesuai jika diperlukan
+
 jobs:
-  build:
+  add-files:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Create timestamp 
-        id: vars
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
         run: |
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-          echo "::set-output name=TS::(date +'%Y-%m-%d_%H-%M-%S')"
-          echo "::set-output name=TIZO::$(TZ='Asia/Jakarta' date)"
-      - uses: "finnp/create-file-action@master"
+          git config --global user.name "MyDapitt"
+          git config --global user.email "dapitt@onee.eu.org"
+
+      - name: Add current date and time to file.txt in WIB
+        run: |
+          rm -rf ./update/*
+          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M')
+          echo "$(TZ='Asia/Jakarta' date)" > ./update/$TIMESTAMP.txt
+          echo "$(TZ='Asia/Jakarta' date)" >> file.txt
+          git add *  # Menambahkan yang telah dimodifikasi
+
+      - name: Commit changes
+        run: |
+          TS=$(date +"%Y-%m-%d_%H-%M-%S")
+          git commit -m $TS
+
+      - name: Push changes
         env:
-          FILE_NAME: "./timestamp/${{ steps.vars.sha_short }}.txt"
-          FILE_DATA: "${{ steps.vars.outputs.TS }}"
-      - name: add and commit
-        uses: EndBug/add-and-commit@v7.1.1 
-        with:
-          add: "./timestamp/${{ steps.vars.outputs.sha_short }}.txt"
-          message: "Update: ${{ steps.vars.outputs.TIZO }}"
+          GITHUB_TOKEN: ${{ secrets.GHT_TOKEN }}  # Token akses GitHub otomatis
+        run: git push
